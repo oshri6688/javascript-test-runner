@@ -51,14 +51,19 @@ export class MochaTestRunner implements ITestRunnerInterface {
     const environmentVariables = this.configurationProvider
       .environmentVariables;
 
-    debug.startDebugging(rootPath, {
-      args: [
+    let args = [
         fileName,
         "--grep",
         testName,
-        "--no-timeout",
-        ...additionalArguments.split(" ")
-      ],
+        "--no-timeout"
+    ];
+      
+    if ( additionalArguments ) {
+        args.push(...additionalArguments.split(" "));   
+    }
+      
+    debug.startDebugging(rootPath, {
+      args: args,
       console: "integratedTerminal",
       env: environmentVariables,
       name: "Debug Test",
