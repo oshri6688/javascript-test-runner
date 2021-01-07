@@ -6,6 +6,11 @@ import { ITestRunnerOptions } from "../interfaces/ITestRunnerOptions";
 import { ConfigurationProvider } from "../providers/ConfigurationProvider";
 import { TerminalProvider } from "../providers/TerminalProvider";
 
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#Escaping
+function escapeRegExp(string: string) {
+  return string.replace(/[.*+\-?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+}
+
 export class JestTestRunner implements ITestRunnerInterface {
   public name: string = "jest";
   public terminalProvider: TerminalProvider = null;
@@ -33,7 +38,7 @@ export class JestTestRunner implements ITestRunnerInterface {
 
     const command = `${
       this.binPath
-    } ${cleanedFileName} --testNamePattern="${testName}" ${additionalArguments}`;
+    } ${cleanedFileName} --testNamePattern="${escapeRegExp(testName)}" ${additionalArguments}`;
 
     const terminal = this.terminalProvider.get(
       { env: environmentVariables },
