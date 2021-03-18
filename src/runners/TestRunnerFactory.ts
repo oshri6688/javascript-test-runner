@@ -1,13 +1,13 @@
 import { exists } from "fs";
 import { join } from "path";
 import { WorkspaceFolder } from "vscode";
-
 import { ITestRunnerInterface } from "../interfaces/ITestRunnerInterface";
 import { ConfigurationProvider } from "../providers/ConfigurationProvider";
 import { TerminalProvider } from "../providers/TerminalProvider";
 import { ReactScriptsTestRunner } from "./ReactScriptsTestRunner";
 import { JestTestRunner } from "./JestTestRunner";
 import { MochaTestRunner } from "./MochaTestRunner";
+import { findNodeModules } from "../utils";
 
 const terminalProvider = new TerminalProvider();
 
@@ -19,12 +19,9 @@ function doesFileExist(filePath: string): Promise<boolean> {
   });
 }
 
-async function getAvailableTestRunner(
-  testRunners: ITestRunnerInterface[],
-  rootPath: WorkspaceFolder
-): Promise<ITestRunnerInterface> {
+async function getAvailableTestRunner(testRunners: ITestRunnerInterface[]): Promise<ITestRunnerInterface> {
   for (const runner of testRunners) {
-    const doesRunnerExist = await doesFileExist(join(rootPath.uri.fsPath, runner.binPath));
+    const doesRunnerExist = await doesFileExist(runner.binPath);
 
     if (doesRunnerExist) {
       return runner;
@@ -36,21 +33,26 @@ async function getAvailableTestRunner(
 
 export async function getTestRunner(rootPath: WorkspaceFolder): Promise<ITestRunnerInterface> {
   const configurationProvider = new ConfigurationProvider(rootPath);
+  const nodeModules = await findNodeModules(rootPath.uri.fsPath);
+  const executableSuffix = process.platform === "win32" ? ".cmd" : "";
 
   const reactScriptsTestRunner = new ReactScriptsTestRunner({
     configurationProvider,
     terminalProvider,
+    binPath: join(nodeModules, ".bin", "react-scripts" + executableSuffix),
   });
 
   const jestTestRunner = new JestTestRunner({
     configurationProvider,
     terminalProvider,
+    binPath: join(nodeModules, ".bin", "jest" + executableSuffix),
   });
 
   const mochaTestRunner = new MochaTestRunner({
     configurationProvider,
     terminalProvider,
+    binPath: join(nodeModules, ".bin", "mocha" + executableSuffix),
   });
 
-  return getAvailableTestRunner([reactScriptsTestRunner, jestTestRunner, mochaTestRunner], rootPath);
+  return getAvailableTestRunner([reactScriptsTestRunner, jestTestRunner, mochaTestRunner]);
 }

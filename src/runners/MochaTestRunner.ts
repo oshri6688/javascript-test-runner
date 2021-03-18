@@ -1,4 +1,3 @@
-import { join } from "path";
 import { debug, WorkspaceFolder } from "vscode";
 
 import { ITestRunnerInterface } from "../interfaces/ITestRunnerInterface";
@@ -10,14 +9,12 @@ export class MochaTestRunner implements ITestRunnerInterface {
   public name: string = "mocha";
   public terminalProvider: TerminalProvider = null;
   public configurationProvider: ConfigurationProvider = null;
+  public binPath: string;
 
-  get binPath(): string {
-    return join("node_modules", ".bin", "mocha");
-  }
-
-  constructor({ terminalProvider, configurationProvider }: ITestRunnerOptions) {
+  constructor({ terminalProvider, configurationProvider, binPath }: ITestRunnerOptions) {
     this.terminalProvider = terminalProvider;
     this.configurationProvider = configurationProvider;
+    this.binPath = binPath;
   }
 
   // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Regular_Expressions#escaping

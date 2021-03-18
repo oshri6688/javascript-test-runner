@@ -1,4 +1,3 @@
-import { join } from "path";
 import { debug, WorkspaceFolder } from "vscode";
 
 import { ITestRunnerInterface } from "../interfaces/ITestRunnerInterface";
@@ -10,14 +9,12 @@ export class JestTestRunner implements ITestRunnerInterface {
   public name: string = "jest";
   public terminalProvider: TerminalProvider = null;
   public configurationProvider: ConfigurationProvider = null;
+  public binPath: string;
 
-  get binPath(): string {
-    return join("node_modules", ".bin", "jest");
-  }
-
-  constructor({ terminalProvider, configurationProvider }: ITestRunnerOptions) {
+  constructor({ terminalProvider, configurationProvider, binPath }: ITestRunnerOptions) {
     this.terminalProvider = terminalProvider;
     this.configurationProvider = configurationProvider;
+    this.binPath = binPath;
   }
 
   public runTest(rootPath: WorkspaceFolder, fileName: string, testName: string) {
@@ -25,9 +22,7 @@ export class JestTestRunner implements ITestRunnerInterface {
     const environmentVariables = this.configurationProvider.environmentVariables;
     // We force slash instead of backslash for Windows
     const cleanedFileName = fileName.replace(/\\/g, "/");
-
     const command = `${this.binPath} ${cleanedFileName} --testNamePattern="${testName}" ${additionalArguments}`;
-
     const terminal = this.terminalProvider.get({ env: environmentVariables }, rootPath);
 
     terminal.sendText(command, true);
