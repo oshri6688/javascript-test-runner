@@ -20,38 +20,23 @@ export class ReactScriptsTestRunner implements ITestRunnerInterface {
     this.configurationProvider = configurationProvider;
   }
 
-  public runTest(
-    rootPath: WorkspaceFolder,
-    fileName: string,
-    testName: string
-  ) {
+  public runTest(rootPath: WorkspaceFolder, fileName: string, testName: string) {
     const additionalArguments = this.configurationProvider.additionalArguments;
-    const environmentVariables = this.configurationProvider
-      .environmentVariables;
+    const environmentVariables = this.configurationProvider.environmentVariables;
     // We force slash instead of backslash for Windows
     const cleanedFileName = parse(fileName).base;
 
-    const command = `${
-      this.binPath
-    } test ${cleanedFileName} --testNamePattern="${testName}" --no-cache --watchAll=false ${additionalArguments}`;
+    const command = `${this.binPath} test ${cleanedFileName} --testNamePattern="${testName}" --no-cache --watchAll=false ${additionalArguments}`;
 
-    const terminal = this.terminalProvider.get(
-      { env: environmentVariables },
-      rootPath
-    );
+    const terminal = this.terminalProvider.get({ env: environmentVariables }, rootPath);
 
     terminal.sendText(command, true);
     terminal.show(true);
   }
 
-  public debugTest(
-    rootPath: WorkspaceFolder,
-    fileName: string,
-    testName: string
-  ) {
+  public debugTest(rootPath: WorkspaceFolder, fileName: string, testName: string) {
     const additionalArguments = this.configurationProvider.additionalArguments;
-    const environmentVariables = this.configurationProvider
-      .environmentVariables;
+    const environmentVariables = this.configurationProvider.environmentVariables;
     // We force slash instead of backslash for Windows
     const cleanedFileName = parse(fileName).base;
 
@@ -66,13 +51,13 @@ export class ReactScriptsTestRunner implements ITestRunnerInterface {
         "--runInBand",
         "--no-cache",
         "--watchAll=false",
-        ...additionalArguments.split(" ")
+        ...additionalArguments.split(" "),
       ],
       env: environmentVariables,
       protocol: "inspector",
       console: "integratedTerminal",
       internalConsoleOptions: "neverOpen",
-      runtimeExecutable: "${workspaceFolder}/node_modules/.bin/react-scripts"
+      runtimeExecutable: "${workspaceFolder}/node_modules/.bin/react-scripts",
     });
   }
 }

@@ -20,38 +20,23 @@ export class JestTestRunner implements ITestRunnerInterface {
     this.configurationProvider = configurationProvider;
   }
 
-  public runTest(
-    rootPath: WorkspaceFolder,
-    fileName: string,
-    testName: string
-  ) {
+  public runTest(rootPath: WorkspaceFolder, fileName: string, testName: string) {
     const additionalArguments = this.configurationProvider.additionalArguments;
-    const environmentVariables = this.configurationProvider
-      .environmentVariables;
+    const environmentVariables = this.configurationProvider.environmentVariables;
     // We force slash instead of backslash for Windows
     const cleanedFileName = fileName.replace(/\\/g, "/");
 
-    const command = `${
-      this.binPath
-    } ${cleanedFileName} --testNamePattern="${testName}" ${additionalArguments}`;
+    const command = `${this.binPath} ${cleanedFileName} --testNamePattern="${testName}" ${additionalArguments}`;
 
-    const terminal = this.terminalProvider.get(
-      { env: environmentVariables },
-      rootPath
-    );
+    const terminal = this.terminalProvider.get({ env: environmentVariables }, rootPath);
 
     terminal.sendText(command, true);
     terminal.show(true);
   }
 
-  public debugTest(
-    rootPath: WorkspaceFolder,
-    fileName: string,
-    testName: string
-  ) {
+  public debugTest(rootPath: WorkspaceFolder, fileName: string, testName: string) {
     const additionalArguments = this.configurationProvider.additionalArguments;
-    const environmentVariables = this.configurationProvider
-      .environmentVariables;
+    const environmentVariables = this.configurationProvider.environmentVariables;
     // We force slash instead of backslash for Windows
     const cleanedFileName = fileName.replace(/\\/g, "/");
 
@@ -59,16 +44,10 @@ export class JestTestRunner implements ITestRunnerInterface {
       name: "Debug Test",
       type: "node",
       request: "launch",
-      args: [
-        cleanedFileName,
-        `--testNamePattern`,
-        testName,
-        "--runInBand",
-        ...additionalArguments.split(" ")
-      ],
+      args: [cleanedFileName, `--testNamePattern`, testName, "--runInBand", ...additionalArguments.split(" ")],
       env: environmentVariables,
       console: "integratedTerminal",
-      program: "${workspaceFolder}/node_modules/jest/bin/jest.js"
+      program: "${workspaceFolder}/node_modules/jest/bin/jest.js",
     });
   }
 }

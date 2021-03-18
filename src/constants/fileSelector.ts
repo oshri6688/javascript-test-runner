@@ -1,18 +1,18 @@
 export default [
   {
     language: "typescript",
-    scheme: "file"
+    scheme: "file",
   },
   {
     language: "typescriptreact",
-    scheme: "file"
+    scheme: "file",
   },
   {
     language: "javascript",
-    scheme: "file"
+    scheme: "file",
   },
   {
     language: "javascriptreact",
-    scheme: "file"
-  }
+    scheme: "file",
+  },
 ];

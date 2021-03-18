@@ -10,9 +10,5 @@ export interface ITestRunnerInterface {
   configurationProvider: ConfigurationProvider;
 
   runTest(rootPath: WorkspaceFolder, fileName: string, testName: string): void;
-  debugTest(
-    rootPath: WorkspaceFolder,
-    fileName: string,
-    testName: string
-  ): void;
+  debugTest(rootPath: WorkspaceFolder, fileName: string, testName: string): void;
 }

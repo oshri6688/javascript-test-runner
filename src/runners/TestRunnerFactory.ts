@@ -12,8 +12,8 @@ import { MochaTestRunner } from "./MochaTestRunner";
 const terminalProvider = new TerminalProvider();
 
 function doesFileExist(filePath: string): Promise<boolean> {
-  return new Promise(resolve => {
-    exists(filePath, doesExist => {
+  return new Promise((resolve) => {
+    exists(filePath, (doesExist) => {
       resolve(doesExist);
     });
   });
@@ -24,9 +24,7 @@ async function getAvailableTestRunner(
   rootPath: WorkspaceFolder
 ): Promise<ITestRunnerInterface> {
   for (const runner of testRunners) {
-    const doesRunnerExist = await doesFileExist(
-      join(rootPath.uri.fsPath, runner.binPath)
-    );
+    const doesRunnerExist = await doesFileExist(join(rootPath.uri.fsPath, runner.binPath));
 
     if (doesRunnerExist) {
       return runner;
@@ -36,28 +34,23 @@ async function getAvailableTestRunner(
   throw new Error("No test runner in your project. Please install one.");
 }
 
-export async function getTestRunner(
-  rootPath: WorkspaceFolder
-): Promise<ITestRunnerInterface> {
+export async function getTestRunner(rootPath: WorkspaceFolder): Promise<ITestRunnerInterface> {
   const configurationProvider = new ConfigurationProvider(rootPath);
 
   const reactScriptsTestRunner = new ReactScriptsTestRunner({
     configurationProvider,
-    terminalProvider
+    terminalProvider,
   });
 
   const jestTestRunner = new JestTestRunner({
     configurationProvider,
-    terminalProvider
+    terminalProvider,
   });
 
   const mochaTestRunner = new MochaTestRunner({
     configurationProvider,
-    terminalProvider
+    terminalProvider,
   });
 
-  return getAvailableTestRunner(
-    [reactScriptsTestRunner, jestTestRunner, mochaTestRunner],
-    rootPath
-  );
+  return getAvailableTestRunner([reactScriptsTestRunner, jestTestRunner, mochaTestRunner], rootPath);
 }
