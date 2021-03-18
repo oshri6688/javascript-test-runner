@@ -4,9 +4,9 @@ const testTokens = ["describe", "it", "test"];
 
 function codeParser(sourceCode) {
   const ast = parse(sourceCode, {
-    plugins: ["jsx", "typescript"],
+    plugins: ["jsx", "typescript", "optionalChaining"],
     sourceType: "module",
-    tokens: true
+    tokens: true,
   });
 
   return ast.tokens
@@ -24,7 +24,7 @@ function codeParser(sourceCode) {
 
       return {
         loc,
-        testName: ast.tokens[index + 2].value
+        testName: ast.tokens[index + 2].value,
       };
     })
     .filter(Boolean);
