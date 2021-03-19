@@ -5,7 +5,7 @@ import { join, dirname } from "path";
 const stat = promisify(oldStat);
 
 export async function findNodeModules(workspaceFolder: string): Promise<string> {
-  let next = dirname(workspaceFolder);
+  let next = workspaceFolder;
 
   for (;;) {
     const nodeModulesPath = join(next, "node_modules");
