@@ -1,27 +1,26 @@
-import { exec } from "child_process";
-import { realpath } from "fs";
+import { stat as oldStat } from "fs";
 import { promisify } from "util";
-import { join } from "path";
+import { join, dirname } from "path";
 
-const asyncExec = promisify(exec);
-const asyncRealpath = promisify(realpath);
+const stat = promisify(oldStat);
 
-export async function findNodeModules(workspaceRoot: string) {
-  try {
-    let result: { stdout: string; stderr: string };
-    switch (process.platform) {
-      case "win32":
-        result = await asyncExec('cmd /C "npm bin"', { cwd: workspaceRoot });
-        break;
-      case "linux":
-        result = await asyncExec('sh -c "npm bin"', { cwd: workspaceRoot });
-        break;
-      default:
-        result = await asyncExec('sh -c "npm bin"', { cwd: workspaceRoot });
-        break;
+export async function findNodeModules(workspaceFolder: string): Promise<string> {
+  let next = dirname(workspaceFolder);
+
+  for (;;) {
+    const nodeModulesPath = join(next, "node_modules");
+    try {
+      if ((await stat(nodeModulesPath)).isDirectory()) {
+        return nodeModulesPath;
+      }
+    } catch (err) {
+      // ignore
     }
-    return await asyncRealpath(join(result.stdout, ".."));
-  } catch (err) {
-    throw new Error(`command "npm bin" fail: ${err}`);
+
+    if (next === dirname(next)) {
+      throw new Error("node_modules not found in workspace and parent folder");
+    }
+
+    next = dirname(next);
   }
 }
