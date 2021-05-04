@@ -7,6 +7,11 @@ Please star Geoffrey's repo if you like the extension.
 
 [![All Contributors](https://img.shields.io/badge/all_contributors-12-orange.svg?style=flat-square)](#contributors)
 
+## ⚠ This extension is currently deprecated 
+(more info : https://github.com/g3offrey/javascript-test-runner/issues/41)
+
+Recommended alternate extensions: [Jest Run It](https://marketplace.visualstudio.com/items?itemName=vespa-dev-works.jestRunIt), [Test Explorer UI](https://marketplace.visualstudio.com/items?itemName=hbenl.vscode-test-explorer)
+
 ## Overview
 
 JavaScript Test Runner add codelens near `describe`, `it`, and `test` keywords permitting to run associated tests and outputing result in a Code integrated terminal.
